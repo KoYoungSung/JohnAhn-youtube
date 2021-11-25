@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const videoSchema = mongoose.Schema({
     writer: {
-        type:Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
     title: {
-        type:String,
-        maxlength:50,
+        type: String,
+        maxlength: 50,
     },
     description: {
         type: String,
@@ -16,15 +16,15 @@ const videoSchema = mongoose.Schema({
     privacy: {
         type: Number,
     },
-    filePath : {
+    filePath: {
         type: String,
     },
     catogory: String,
-    views : {
+    views: {
         type: Number,
-        default: 0 
+        default: 0
     },
-    duration :{
+    duration: {
         type: String
     },
     thumbnail: {
