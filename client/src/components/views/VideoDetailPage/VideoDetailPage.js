@@ -3,8 +3,8 @@ import { List, Avatar, Row, Col } from 'antd';
 import axios from 'axios';
 import SideVideo from './Sections/SideVideo';
 function VideoDetailPage(props) {
-  
-  
+
+
   const videoId = props.match.params.videoId
   const [Video, setVideo] = useState([])
 
@@ -23,7 +23,9 @@ function VideoDetailPage(props) {
         }
       })
 
-  }, [videoVariable])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (Video.writer) {
     return (
