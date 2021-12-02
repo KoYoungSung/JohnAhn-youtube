@@ -5,12 +5,15 @@ import moment from 'moment';
 const { Title } = Typography;
 const { Meta } = Card;
 
-function LandingPage() {
+function SubscriptionPage() {
 
     const [Videos, setVideos] = useState([])
 
     useEffect(() => {
-        axios.get('/api/video/getVideos')
+
+      const subscriptionVariables = { userFrom: localStorage.getItem('userId')}
+
+        axios.post('/api/video/getSubscriptionVideos', subscriptionVariables)
             .then(response => {
                 if (response.data.success) {
                     setVideos(response.data.videos)
@@ -55,7 +58,7 @@ function LandingPage() {
 
     return (
         <div style={{ width: '85%', margin: '3rem auto' }}>
-            <Title level={2} > Recommended </Title>
+            <Title level={2} > Subscribed </Title>
             <hr />
 
             <Row gutter={16}>
@@ -65,4 +68,4 @@ function LandingPage() {
     )
 }
 
-export default LandingPage
+export default SubscriptionPage

@@ -1,21 +1,9 @@
-// Promise.race([
-//   foo,
-//   timeoutPromise(3000)
-// ])
-//   .then(
-//     function () {
-//       console.log(성공)
-//     },
-//     function (err) {
-//       console.log(err)
-//     }
-//   )
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 var ffmpeg = require('fluent-ffmpeg');
 const { Video } = require("../models/Video");
-// const { Subscriber } = require("../models/Subscriber");
+const { Subscriber } = require("../models/Subscriber");
 const { auth } = require("../middleware/auth");
 
 var storage = multer.diskStorage({
@@ -120,30 +108,26 @@ router.post("/getVideo", (req, res) => {
 });
 
 
-// router.post("/getSubscriptionVideos", (req, res) => {
+router.post("/getSubscriptionVideos", (req, res) => {
+  //Need to find all of the Users that I am subscribing to From Subscriber Collection 
+  Subscriber.find({ 'userFrom': req.body.userFrom })
+    .exec((err, subscribers) => {
+      if (err) return res.status(400).send(err);
 
+      let subscribedUser = [];
 
-//   //Need to find all of the Users that I am subscribing to From Subscriber Collection 
+      subscribers.map((subscriber, i) => {
+        subscribedUser.push(subscriber.userTo)
+      })
 
-//   Subscriber.find({ 'userFrom': req.body.userFrom })
-//     .exec((err, subscribers) => {
-//       if (err) return res.status(400).send(err);
-
-//       let subscribedUser = [];
-
-//       subscribers.map((subscriber, i) => {
-//         subscribedUser.push(subscriber.userTo)
-//       })
-
-
-//       //Need to Fetch all of the Videos that belong to the Users that I found in previous step. 
-//       Video.find({ writer: { $in: subscribedUser } })
-//         .populate('writer')
-//         .exec((err, videos) => {
-//           if (err) return res.status(400).send(err);
-//           res.status(200).json({ success: true, videos })
-//         })
-//     })
-// });
+      //Need to Fetch all of the Videos that belong to the Users that I found in previous step. 
+      Video.find({ writer: { $in: subscribedUser } })
+        .populate('writer')
+        .exec((err, videos) => {
+          if (err) return res.status(400).send(err);
+          res.status(200).json({ success: true, videos })
+        })
+    })
+});
 
 module.exports = router;
