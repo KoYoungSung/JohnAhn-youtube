@@ -61,7 +61,6 @@ router.post("/thumbnail", (req, res) => {
 
   ffmpeg.ffprobe(req.body.filePath, function (err, metadata) {
     console.dir(metadata);
-    console.log(metadata.format.duration);
 
     fileDuration = metadata.format.duration;
   })

@@ -1,17 +1,52 @@
-import Axios from 'axios'
 import React, { useEffect, useState } from 'react'
-
-
+import axios from 'axios';
 function Subscribe(props) {
-
+  const userTo = props.userTo
+  const userFrom = props.userFrom
 
   const [SubscribeNumber, setSubscribeNumber] = useState(0)
   const [Subscribed, setSubscribed] = useState(false)
 
+  const onSubscribe = () => {
+
+    let subscribeVariables = {
+      userTo: userTo,
+      userFrom: userFrom
+    }
+
+    if (Subscribed) {
+      //when we are already subscribed 
+      axios.post('/api/subscribe/unSubscribe', subscribeVariables)
+        .then(response => {
+          if (response.data.success) {
+            setSubscribeNumber(SubscribeNumber - 1)
+            setSubscribed(!Subscribed)
+          } else {
+            alert('Failed to unsubscribe')
+          }
+        })
+
+    } else {
+      // when we are not subscribed yet
+
+      axios.post('/api/subscribe/subscribe', subscribeVariables)
+        .then(response => {
+          if (response.data.success) {
+            setSubscribeNumber(SubscribeNumber + 1)
+            setSubscribed(!Subscribed)
+          } else {
+            alert('Failed to subscribe')
+          }
+        })
+    }
+
+  }
+
+
   useEffect(() => {
 
-    let variable = { userTo: props.userTo }
-    Axios.post('/api/subscribe/subscribeNumber', variable)
+    const subscribeNumberVariables = { userTo: userTo, userFrom: userFrom }
+    axios.post('/api/subscribe/subscribeNumber', subscribeNumberVariables)
       .then(response => {
         if (response.data.success) {
           setSubscribeNumber(response.data.subscribeNumber)
@@ -20,25 +55,22 @@ function Subscribe(props) {
         }
       })
 
-    let subscribedVariable = { userTo: props.userTo, userFrom: localStorage.getItem('userId')}
-
-    Axios.post('/api/subscribe/subscribed', subscribedVariable)
+    axios.post('/api/subscribe/subscribed', subscribeNumberVariables)
       .then(response => {
         if (response.data.success) {
-          setSubscribed(response.data.subscribed)
+          setSubscribed(response.data.subcribed)
         } else {
-          alert('데이터 가져오기 실패')
+          alert('Failed to get Subscribed Information')
         }
       })
 
+  }, [userFrom, userTo])
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <div>
       <button
-        // onClick={onSubscribe}
+        onClick={onSubscribe}
         style={{
           backgroundColor: `${Subscribed ? '#AAAAAA' : '#CC0000'}`,
           borderRadius: '4px', color: 'white',
@@ -51,3 +83,4 @@ function Subscribe(props) {
 }
 
 export default Subscribe
+
